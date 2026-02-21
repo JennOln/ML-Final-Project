@@ -1,0 +1,61 @@
+.Resolucion {
+    width: 99%;
+    justify-content: center;
+    text-align: center;
+    align-items: center; 
+    
+}
+
+body {
+    background-image: url('/resources/wallpaper.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 1048px;
+
+}
+
+/*contenedor del bóton comenzar */
+.container{
+    margin-top: auto; 
+    padding-bottom: 40px; /* Espacio extra respecto al borde inferior */
+}
+
+.btn-comenzar {
+    background-color: rgba(23, 35, 88, 0.8); /* Azul oscuro traslúcido */
+    color: white;
+    padding: 15px 30px;
+    border: 2px solid rgb(21, 70, 90);
+    border-radius: 25px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Garamond', serif; /* O la fuente que prefieras */
+}
+
+.btn-comenzar:hover {
+    background-color: rgb(21, 70, 90);
+    transform: scale(1.1); /* Efecto de agrandado al pasar el mouse */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/*video transition */
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: none; /* Oculto por defecto */
+    z-index: 9999;
+}
+
+.transition-overlay video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que el video llene la pantalla sin deformarse */
+}
+
+.container{
+    padding-top: 800px;
+}

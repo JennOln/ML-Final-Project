@@ -1,0 +1,169 @@
+.Resolucion {
+    width: 99%;
+    justify-content: center;
+    text-align: center;
+    align-items: center; 
+    
+}
+
+body {
+    background-color: rgb(29, 29, 29);
+
+}
+
+
+/* Contenedor del reproductor de audio */
+.audio-player {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: none;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra de progreso en la parte superior */
+/* Estilos generales del slider */
+.progress-bar {
+    -webkit-appearance: none; /* Elimina el estilo predeterminado del slider */
+    appearance: none;
+    width: 100%;
+    height: 5px; /* El grosor de la barra */
+    background: #ffffffb7; /* Color de fondo de la barra */
+    border-radius: 5px; /* redondea los bordes de la barra */
+}
+
+/* Estilos para el thumb (el punto que se mueve) */
+.progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Elimina el estilo predeterminado */
+    appearance: none;
+    width: 65px; /* Ancho del thumb */
+    height: 65px; /* Alto del thumb */
+    border-radius: 50%; /* Hace que el thumb sea circular */
+    background-image: url('resources/daga.png'); /* Aquí agregas la imagen que reemplaza el punto */
+    background-size: cover; /* Hace que la imagen cubra el tamaño del thumb */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el thumb */
+    border: none; /* Elimina el borde predeterminado */
+}
+
+.progress-bar:focus {
+    outline: none;
+}
+
+.progress-bar:hover {
+    background: #b3d7ff;
+}
+
+/* Estilos para el botón de play/pause en la parte inferior */
+.play-pause {
+    background: none;
+    border: 2px solid rgb(21, 70, 90); /* El borde del círculo */
+    border-radius: 50%; /* Hace que el borde sea circular */
+    width: 30px; /* Tamaño del círculo */
+    height: 30px; /* Tamaño del círculo */
+    font-size: 25px;
+    margin-top: 10px;
+    color: rgb(23, 35, 88);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra el icono dentro del círculo */
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover para el botón */
+.play-pause:hover {
+    color: rgb(21, 70, 90);
+    border-color: rgb(23, 35, 88); /* Cambia el borde al hacer hover */
+}
+
+:root {
+  --gold-elden: rgb(21, 70, 90);      /* Dorado ceniza */
+  --gold-bright: rgb(108, 165, 219);     /* Brillo de Gracia */
+  --deep-black: #050505;      /* Negro abisal */
+  --text-gray: #a5a5a5;       /* Gris de piedra */
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 20px;
+  background-color: var(--deep-black);
+  /* El borde inferior tiene un degradado para que parezca que se desvanece en las esquinas */
+  border-bottom: 1px solid;
+  border-image: linear-gradient(to right, transparent, var(--gold-elden), transparent) 1;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+}
+
+/* Contenedor del título (Logo) */
+.header-title {
+  font-family: 'Cinzel', serif;
+  color: var(--gold-elden);
+  font-size: 2.2rem;
+  letter-spacing: 0.5em; /* Clave para el estilo épico */
+  text-transform: uppercase;
+  margin-bottom: 35px;
+  text-shadow: 0 0 20px rgba(193, 162, 105, 0.15);
+  transition: text-shadow 0.5s ease;
+}
+
+.header-title:hover {
+  text-shadow: 0 0 30px rgba(193, 162, 105, 0.4);
+}
+
+/* Navegación */
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 60px; /* Espaciado amplio entre opciones */
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li a {
+  font-family: 'Cormorant Garamond', serif;
+  text-decoration: none;
+  color: var(--text-gray);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto Hover: El texto se ilumina y aparece una línea dorada */
+nav ul li a:hover {
+  color: var(--gold-bright);
+  text-shadow: 0 0 12px rgba(245, 227, 181, 0.4);
+}
+
+/* La línea debajo del link que se expande desde el centro */
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 1px;
+  bottom: -8px;
+  left: 50%;
+  background: linear-gradient(to right, transparent, var(--gold-elden), transparent);
+  transition: width 0.6s ease, left 0.6s ease;
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Detalle visual: un pequeño rombo decorativo entre opciones (opcional) */
+nav ul li:not(:last-child)::after {
+  content: '◆';
+  color: rgba(193, 162, 105, 0.2);
+  font-size: 0.6rem;
+  position: relative;
+  right: -30px;
+  top: -2px;
+}

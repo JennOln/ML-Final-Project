@@ -1,8 +1,10 @@
 .Resolucion {
-    width: 99%;
     justify-content: center;
     text-align: center;
     align-items: center; 
+    width: 100vw;  /* 100% del ancho de la ventana */
+    height: 100vh; /* 100% del alto de la ventana */
+    object-fit: cover; /* Ajusta la imagen para cubrir todo sin estirarse */
     
 }
 
@@ -10,8 +12,10 @@ body {
     background-image: url('/resources/wallpaper.png');
     background-size: cover;
     background-repeat: no-repeat;
-    height: 1048px;
-
+    background-position: center;
+    object-fit: cover; /* Ajusta la imagen para cubrir todo sin estirarse */
+    width: 100vw;  /* 100% del ancho de la ventana */
+    height: 100vh; /* 100% del alto de la ventana */
 }
 
 /*contenedor del bóton comenzar */

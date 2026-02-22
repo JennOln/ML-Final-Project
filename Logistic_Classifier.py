@@ -45,16 +45,14 @@ class behaviorData:
         self.y = self.data[target].values
         return self.X, self.y
 
-    def normalized_data(self){
-    """Normalización Z-score implemented with JAX"""
+    def normalized_data(self):
+        """Normalización Z-score implemented with JAX"""
         X_jax = jnp.array(self.X) # Convertir la matriz X a JAX array
         mean = jnp.mean(X_jax, axis=0) # Calcular mu por col, axis=0 calcula el promedio de cada característica
         std = jnp.std(X_jax, axis=0) #Calcular la desviación estándar (sigma) por columna
         self.X_scaled = (X_jax - mean) / (std + 1e-8) ## 4. Aplicar la fórmula: (x - mu) / sigma
-        
         print("Normalización con JAX complete.")
         return self.X_scaled
-    }
     
 def main():
     # 1. Instanciar

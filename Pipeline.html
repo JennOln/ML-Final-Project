@@ -27,18 +27,24 @@
                 </ul>
             </nav>
         </header>
-        <video id="video">
-            
-        </video>
-        <audio id="audio">
-                <source src="Hela.mp3" type="audio/mpeg">
-                Tu navegador no soporta la reproducción de <audio src=""></audio>
-        </audio>
-        <div class="audio-player">
-            <input type="range" id="progressBar" class="progress-bar" value="0" step="1" min="0" max="100">
-            <button id="playPauseBtn" class="play-pause">
-                <i class="fa fa-play"></i>
-            </button>
+        <div class = "container">
+            <video id="video" autoplay muted loop playsinline disablePictureInPicture>
+                <source src ="resources/Wallpaper.mp4" type="video/mp4">
+                Tu navegador no soporta video
+            </video>
+            <div class ="logo-wrapper">
+                <img src ="/resources/logo.png" alt="Logo SS" class="project-logo">
+            </div>
+            <audio id="audio">
+                <source src="/resources/Hela.mp3" type="audio/mpeg">
+                    Tu navegador no soporta la reproducción de <audio src=""></audio>
+            </audio>
+            <div class="audio-player">
+                <input type="range" id="progressBar" class="progress-bar" value="0" step="1" min="0" max="100">
+                <button id="playPauseBtn" class="play-pause">
+                    <i class="fa fa-play"></i>
+                </button>
+            </div>
         </div>
         <h1>ML Final Project</h1>
         <h2>General Pipeline</h2>

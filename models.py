@@ -7,7 +7,7 @@ def linear_class(W, b, X):
     """
     y_hat = jnp.dot(X, W) + b
     # Para clasificar, devolvemos 1 si y_hat > 0, de lo contrario 0
-    return jnp.where(y_hat > 0, 1, 0)
+    return jnp.where(y_hat > jnp.mean(y_hat), 1, 0)
 
 def loss_linear(params, X, y):
     """
@@ -30,3 +30,11 @@ def train_step(params, X, y, learning_rate=0.01):
     new_b = b - learning_rate * grad_b
     
     return new_W, new_b
+
+def logistic_class(W, b, X):
+    """
+    y_hat = sigmoid(XW + b)
+    """
+    linear_output = jnp.dot(X, W) + b
+    y_hat = 1 / (1 + jnp.exp(-linear_output))  # Sigmoid function
+    return jnp.where(y_hat > 0.5, 1, 0)

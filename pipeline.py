@@ -59,7 +59,7 @@ def run_pipeline():
         learning_rate = 0.05
         epochs = 100
 
-        # --- ENTRENAMIENTO LINEAL ---
+        #Lineal Training
         print(f"\n--- Training with {n_features} features ---")
         for epoch in range(epochs):
             params = models.train_step(params, X_scaled, y, learning_rate)
@@ -69,7 +69,7 @@ def run_pipeline():
         m_lin = calcular_metricas(y, y_pred_linear)
         print(f"Linear Model Accuracy: {m_lin['acc']:.2f}%")
 
-        # --- ENTRENAMIENTO LOGÍSTICO ---
+        # LOgistic Training 
         # Reiniciamos parámetros para el logístico o usamos los del lineal como base
         for epoch in range(epochs):
             params = models.train_step_logistic(params, X_scaled, y, learning_rate)
@@ -151,18 +151,18 @@ def predict_interactive(params, data_obj):
         probabilidad = 1 / (1 + jnp.exp(-z))
 
         clase = "ÉLITE" if probabilidad > 0.5 else "NORMAL"
-        print(f"Predicción del Modelo: {clase}")
-        print(f"Probabilidad de éxito: {probabilidad*100:.2f}%")
+        print(f"Model Prediction: {clase}")
+        print(f"Success Probability: {probabilidad*100:.2f}%")
 
     except Exception as e:
-        print(f"Error en la entrada de datos: {e}")
+        print(f"Error in data input: {e}")
 
 if __name__ == "__main__":
     final_params, trained_data = run_pipeline()
     
     # Iniciamos el modo interactivo
     while True:
-        opcion = input("\n¿Deseas probar un libro nuevo? (s/n): ")
+        opcion = input("\nDo you want to test a new book? (s/n): ")
         if opcion.lower() == 's':
             predict_interactive(final_params, trained_data)
         else:

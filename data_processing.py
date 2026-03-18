@@ -4,7 +4,6 @@ import jax.numpy as jnp
 
 # source jax_env/bin/activate
 
-
 class booksData:
     def __init__(self, file):
         self.data = pd.read_csv(file)
@@ -91,7 +90,6 @@ class booksData:
 
         col_numerical = [
             'stars',
-            'reviews',
             'price'
             ]
         
@@ -100,7 +98,14 @@ class booksData:
             self.data[col] = self.data[col].astype(int)
 
         self.features = col_numerical + col_dummies + col_boolean
-        target = 'isBestSeller'        
+
+        # 1. Definimos el umbral de Élite (Percentil 75)
+        umbral_elite = self.data['reviews'].quantile(0.75)
+        print(f"Umbral de reseñas para ser Élite: {umbral_elite}")
+
+        # 2. Creamos el nuevo Target
+        self.data['isElite'] = (self.data['reviews'] >= umbral_elite).astype(int)
+        target = 'isElite'      
 
         self.X = self.data[self.features].values
         self.y = self.data[target].values
@@ -112,6 +117,10 @@ class booksData:
         X_numeric = self.X.astype(float) #astype convert True or False in 1.0 or 0.0
         X_jax = jnp.array(X_numeric) # Convertir la matriz X a JAX array
 
+        # CAMBIO NO DEFINIDO: Guardamos en self para usarlos en la predicción futura
+        self.mu_train = jnp.mean(X_jax, axis=0) 
+        self.sigma_train = jnp.std(X_jax, axis=0)
+        
         mean = jnp.mean(X_jax, axis=0) # Calcular mu por col, axis=0 calcula el promedio de cada característica
         std = jnp.std(X_jax, axis=0) #Calcular la desviación estándar (sigma) por columna
         

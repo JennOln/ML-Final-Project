@@ -28,18 +28,18 @@ body {
 .progress-bar {
     -webkit-appearance: none; /* Elimina el estilo predeterminado del slider */
     appearance: none;
-    width: 100%;
-    height: 5px; /* El grosor de la barra */
+    width: 80%;
+    height: 1px; /* El grosor de la barra */
     background: #ffffffb7; /* Color de fondo de la barra */
-    border-radius: 5px; /* redondea los bordes de la barra */
+    border-radius: 15px; /* redondea los bordes de la barra */
 }
 
 /* Estilos para el thumb (el punto que se mueve) */
 .progress-bar::-webkit-slider-thumb {
     -webkit-appearance: none; /* Elimina el estilo predeterminado */
     appearance: none;
-    width: 65px; /* Ancho del thumb */
-    height: 65px; /* Alto del thumb */
+    width: 70px; /* Ancho del thumb */
+    height: 70px; /* Alto del thumb */
     border-radius: 50%; /* Hace que el thumb sea circular */
     background-image: url('resources/daga.png'); /* Aquí agregas la imagen que reemplaza el punto */
     background-size: cover; /* Hace que la imagen cubra el tamaño del thumb */
@@ -204,4 +204,89 @@ nav ul li:not(:last-child)::after {
 
 .project-logo:hover {
     transform: scale(1.05); /* Efecto sutil al pasar el mouse */
+}
+
+/* Desplazamiento suave */
+html {
+    scroll-behavior: smooth;
+}
+
+.content-wrapper {
+    padding: 100px 10% ;
+    background: linear-gradient(to bottom, transparent, var(--deep-black));
+}
+
+.form-container, .result-card {
+    margin-bottom: 100vh; /* Hace que cada sección ocupe una pantalla completa */
+    padding: 40px;
+    border: 1px solid var(--gold-elden);
+    background: rgba(5, 5, 5, 0.8);
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.input-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+input, select, button#predict_btn {
+    padding: 12px;
+    background: #1a1a1a;
+    border: 1px solid var(--gold-elden);
+    color: white;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+button#predict_btn {
+    cursor: pointer;
+    background: var(--gold-elden);
+    color: black;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+button#predict_btn:hover {
+    background: var(--gold-bright);
+    box-shadow: 0 0 15px var(--gold-bright);
+}
+
+.prediction-text {
+    font-size: 2rem;
+    color: var(--gold-bright);
+    margin-top: 20px;
+}
+
+h1, h2, h3,label, p {
+    color: whitesmoke;
+}
+
+
+/* Alineación en columna para los checkboxes */
+.checkbox-wrapper {
+    display: flex;
+    flex-direction: column; /* La clave para que estén uno sobre otro */
+    align-items: flex-start; /* Alinea los textos a la izquierda */
+    gap: 8px;               /* Espacio entre cada checkbox */
+    padding: 10px;
+}
+
+/* Estilo para las etiquetas de los checkboxes */
+.checkbox-wrapper label {
+    display: flex;
+    align-items: center;
+    color: var(--text-gray);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap; /* Evita que el texto se rompa en dos líneas */
+}
+
+/* Ajuste para el input dentro del label */
+.checkbox-wrapper input[type="checkbox"] {
+    margin-right: 10px;
+    accent-color: var(--gold-bright); /* Color dorado al marcarse */
+    cursor: pointer;
 }

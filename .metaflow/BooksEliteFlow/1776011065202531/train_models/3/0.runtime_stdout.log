@@ -1,0 +1,29 @@
+[MFLOG|0|2026-04-12T16:24:30.788081Z|runtime|ccced52f-e2aa-45b6-9ea8-887fe02d7143]
+[MFLOG|0|2026-04-12T16:24:34.848238Z|runtime|29c8c0e5-c07c-4ff2-8908-d6e88704e75c]Training Linear Classifier...
+[MFLOG|0|2026-04-12T16:24:34.848454Z|runtime|25fab4f4-caba-45da-867b-a17828e2c621]Linear Model Accuracy: 81.22%
+[MFLOG|0|2026-04-12T16:24:35.595107Z|runtime|e6f75c4b-d211-4331-956d-25fffe55a92c]
+[MFLOG|0|2026-04-12T16:24:35.595325Z|runtime|5b04759c-d7c2-44ee-899d-c31a8f51ca33]Training Logistic Regression...
+[MFLOG|0|2026-04-12T16:24:35.595441Z|runtime|0ef61a02-8a85-4403-8f7c-c0bcdef25981]epoch 0: Error (Loss) = 1.009430
+[MFLOG|0|2026-04-12T16:24:36.288730Z|runtime|d6104be1-c19d-4d89-b950-0a275258d609]epoch 100: Error (Loss) = 0.534081
+[MFLOG|0|2026-04-12T16:24:36.986969Z|runtime|7ef2c74e-e556-4ed2-b630-7540c46ce168]epoch 200: Error (Loss) = 0.505040
+[MFLOG|0|2026-04-12T16:24:37.681558Z|runtime|98b6c4cd-c021-4b53-b634-67ce66bd037c]epoch 300: Error (Loss) = 0.486791
+[MFLOG|0|2026-04-12T16:24:38.392478Z|runtime|8abe855b-cef2-4a89-aad0-a33746e611a5]epoch 400: Error (Loss) = 0.473419
+[MFLOG|0|2026-04-12T16:24:39.110936Z|runtime|e5eb4992-161b-4670-9171-1faac3a9fc3f]epoch 500: Error (Loss) = 0.463084
+[MFLOG|0|2026-04-12T16:24:39.826268Z|runtime|63f0aaf1-07a7-40f9-a192-d08b7fd13fa3]epoch 600: Error (Loss) = 0.454860
+[MFLOG|0|2026-04-12T16:24:40.562018Z|runtime|e59d3c3b-34db-4180-9573-e133aaa277be]epoch 700: Error (Loss) = 0.448188
+[MFLOG|0|2026-04-12T16:24:41.302890Z|runtime|2df8f8c4-17f7-4998-acac-f7ce53dcaa5a]epoch 800: Error (Loss) = 0.442696
+[MFLOG|0|2026-04-12T16:24:42.020390Z|runtime|5c99d521-376b-4e11-b619-292acbc95749]epoch 900: Error (Loss) = 0.438119
+[MFLOG|0|2026-04-12T16:24:42.728902Z|runtime|235b704b-0256-4ff7-b5cf-b2bef960d40c]
+[MFLOG|0|2026-04-12T16:24:44.683179Z|runtime|23036cb3-229e-4bd6-af71-78f85377afc1]Training MLP Classifier...
+[MFLOG|0|2026-04-12T16:24:44.683353Z|runtime|3c8ec332-8f46-418b-a96c-e6ac59ec8698]MLP epoch 0: Error (Loss) = 0.681520
+[MFLOG|0|2026-04-12T16:24:49.895112Z|runtime|37ffef0f-a9d5-403c-b85f-542878b6e3ca]MLP epoch 100: Error (Loss) = 0.535910
+[MFLOG|0|2026-04-12T16:24:54.872450Z|runtime|b61102ab-622e-46ff-812a-ffcdc2bee3ec]MLP epoch 200: Error (Loss) = 0.489911
+[MFLOG|0|2026-04-12T16:24:59.705909Z|runtime|2cd81904-4216-4e11-a01c-9f6cdd0d5b65]MLP epoch 300: Error (Loss) = 0.444803
+[MFLOG|0|2026-04-12T16:25:04.580157Z|runtime|ff967283-130b-4d7e-9828-f482c3b75afa]MLP epoch 400: Error (Loss) = 0.414959
+[MFLOG|0|2026-04-12T16:25:09.570380Z|runtime|f62ff1a9-5097-4dc6-be15-febc1f6e4545]MLP epoch 500: Error (Loss) = 0.402486
+[MFLOG|0|2026-04-12T16:25:14.396941Z|runtime|a2c14e97-9478-4181-96f3-1cd9736fad0b]MLP epoch 600: Error (Loss) = 0.397825
+[MFLOG|0|2026-04-12T16:25:19.309498Z|runtime|59e9fffb-5c3c-4ecf-a1cc-a3ab4113225f]MLP epoch 700: Error (Loss) = 0.395436
+[MFLOG|0|2026-04-12T16:25:24.356527Z|runtime|69bad140-c373-4a45-ae84-fc767bed6ca4]MLP epoch 800: Error (Loss) = 0.393875
+[MFLOG|0|2026-04-12T16:25:29.314511Z|runtime|75d97dfb-7fc8-4682-873a-330de6eda804]MLP epoch 900: Error (Loss) = 0.392694
+[MFLOG|0|2026-04-12T16:25:34.092789Z|runtime|5b180946-0899-4828-aad3-a2f9ef32ee03]
+[MFLOG|0|2026-04-12T16:26:55.229552Z|runtime|ca844a87-a18e-4c37-81ca-ec56ee028a3e]--- Entrenando Árbol de Clasificación (Decision Tree) ---

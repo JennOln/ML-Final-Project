@@ -1,0 +1,1 @@
+[MFLOG|0|2026-04-12T16:24:28.762205Z|runtime|05a94168-fc19-42fe-ad13-bf6447ac5947]WARNING:2026-04-12 10:24:28,762:jax._src.xla_bridge:876: An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.

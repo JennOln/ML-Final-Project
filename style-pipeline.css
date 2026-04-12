@@ -259,8 +259,21 @@ button#predict_btn:hover {
     margin-top: 20px;
 }
 
-h1, h2, h3,label, p {
+h1, label, p {
     color: whitesmoke;
+
+}
+
+h2{
+    color:whitesmoke;
+    font-style: italic;
+    font-size: 25px;
+}
+
+h3{
+    color:whitesmoke;
+    font-family: "Playfair Display SC", serif;
+    font-size: 50px;
 }
 
 
@@ -292,37 +305,67 @@ h1, h2, h3,label, p {
 }
 
 /* Estilo para la tabla de resultados */
+/* Contenedor del Dashboard */
 .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 90%;
+    max-width: 1000px;
+    margin: 40px auto;
 }
 
+/* Tarjeta del Modelo */
 .model-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(25, 25, 25, 0.9);
+    border: 1px solid #333;
     border-radius: 15px;
-    padding: 20px;
-    color: white;
-    text-align: center;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
+.model-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Barra de Accuracy */
+.accuracy-wrapper {
+    width: 100%;
+    height: 12px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #444;
+}
+
+.accuracy-fill {
+    height: 100%;
+    width: 0%; /* Animado por PyScript */
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    box-shadow: 0 0 10px #0072ff;
+    transition: width 2s ease-in-out;
+}
+
+/* Matriz de Confusión */
 .matrix-viz {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5px;
-    margin-top: 15px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .m-box {
-    padding: 10px;
-    font-size: 0.8em;
-    border-radius: 5px;
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.tn { background: rgba(52, 152, 219, 0.2); }
-.tp { background: rgba(46, 204, 113, 0.2); }
-.fp, .fn { background: rgba(231, 76, 60, 0.2); }
+.tp { border-bottom: 3px solid #4ade80; }
+.tn { border-bottom: 3px solid #60a5fa; }
+.fp, .fn { border-bottom: 3px solid #f87171; }

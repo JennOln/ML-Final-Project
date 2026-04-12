@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
     
     <py-config>
         packages = ["numpy"]
@@ -77,40 +79,71 @@
             </section>
 
             <div class="dashboard-grid">
+                
                 <section id="linear-section" class="model-card">
-                    <h3>Linear Classifier</h3>
-                    <div class="main-stat"><span id="acc-lin">0</span>% Acc</div>
+                    <div class="model-header">
+                        <h3>Linear Classifier</h3>
+                        <div class="main-stat"><h2><span id="acc-lin">0</span>% Accuracy</h2></div>
+                    </div>
+                    <div class="accuracy-wrapper">
+                        <div id="bar-lin" class="accuracy-fill"></div>
+                    </div>
+                    <div class="metrics-row"><p>F1: <b id="f1-lin">0</<p></b> | Precision: <b id="pre-lin">0</b> | Recall: <b id="rec-lin">0</b></div>
                     <div class="matrix-viz">
-                        <div class="m-box tn">TN: <span id="tn-lin">0</span></div>
-                        <div class="m-box tp">TP: <span id="tp-lin">0</span></div>
+                        <div class="m-box tn"><p>TN: <span id="tn-lin">0</p></span></div>
+                        <div class="m-box fp"><p>FP: <span id="fp-lin">0</<p></span></div>
+                        <div class="m-box fn"><p>FN: <span id="fn-lin">0</<p></span></div>
+                        <div class="m-box tp"><p>TP: <span id="tp-lin">0</<p></span></div>
                     </div>
                 </section>
 
                 <section id="logistic-section" class="model-card">
-                    <h3>Logistic Classifier</h3>
-                    <div class="main-stat"><span id="acc-log">0</span>% Acc</div>
-                    <div class="metrics-row">F1: <b id="f1-log">0</b></div>
+                    <div class="model-header">
+                        <h3>Logistic Classifier</h3>
+                        <div class="main-stat"><h2><span id="acc-log">0</span>% Accuracy</h2></div>
+                    </div>
+                    <div class="accuracy-wrapper">
+                        <div id="bar-log" class="accuracy-fill"></div>
+                    </div>
+                    <div class="metrics-row"><p>F1: <b id="f1-log">0</b> | Precision: <b id="pre-log">0</b> | Recall: <b id="rec-log">0</b></div>
                     <div class="matrix-viz">
                         <div class="m-box tn">TN: <span id="tn-log">0</span></div>
+                        <div class="m-box fp">FP: <span id="fp-log">0</span></div>
+                        <div class="m-box fn">FN: <span id="fn-log">0</span></div>
                         <div class="m-box tp">TP: <span id="tp-log">0</span></div>
                     </div>
                 </section>
 
                 <section id="mlp-section" class="model-card">
-                    <h3>MLP Neural Network</h3>
-                    <div class="main-stat"><span id="acc-mlp">0</span>% Acc</div>
-                    <div class="metrics-row">F1: <b id="f1-mlp">0</b></div>
+                    <div class="model-header">
+                        <h3>MLP Neural Network</h3>
+                        <div class="main-stat"><h2><span id="acc-mlp">0</span>% Accuracy</h2></div>
+                    </div>
+                    <div class="accuracy-wrapper">
+                        <div id="bar-mlp" class="accuracy-fill"></div>
+                    </div>
+                    <div class="metrics-row"><p>F1: <b id="f1-mlp">0</b> | Precision: <b id="pre-mlp">0</b> | Recall: <b id="rec-mlp">0</b></div>
                     <div class="matrix-viz">
                         <div class="m-box tn">TN: <span id="tn-mlp">0</span></div>
+                        <div class="m-box fp">FP: <span id="fp-mlp">0</span></div>
+                        <div class="m-box fn">FN: <span id="fn-mlp">0</span></div>
                         <div class="m-box tp">TP: <span id="tp-mlp">0</span></div>
                     </div>
                 </section>
 
                 <section id="trees-section" class="model-card">
-                    <h3>Decision Tree</h3>
-                    <div class="main-stat"><span id="acc-tree">0</span>% Acc</div>
+                    <div class="model-header">
+                        <h3>Decision Tree</h3>
+                        <div class="main-stat"><h2><span id="acc-tree">0</span>% Accuracy</h2></div>
+                    </div>
+                    <div class="accuracy-wrapper">
+                        <div id="bar-tree" class="accuracy-fill"></div>
+                    </div>
+                    <div class="metrics-row"><p>F1: <b id="f1-tree">0</b> | Precision: <b id="pre-tree">0</b> | Recall: <b id="rec-tree">0</b></div>
                     <div class="matrix-viz">
                         <div class="m-box tn">TN: <span id="tn-tree">0</span></div>
+                        <div class="m-box fp">FP: <span id="fp-tree">0</span></div>
+                        <div class="m-box fn">FN: <span id="fn-tree">0</span></div>
                         <div class="m-box tp">TP: <span id="tp-tree">0</span></div>
                     </div>
                 </section>
@@ -125,53 +158,41 @@
 
     <script type="py">
     from pyscript import document, window
-    import numpy as np
     import asyncio
 
-    # --- LÓGICA DE CARGA DE MÉTRICAS DESDE EL BACKEND ---
     async def load_initial_metrics():
-        # 1. Esperamos 2 segundos para asegurar que el servidor terminó de entrenar
-        await asyncio.sleep(2)
-        
+        # Damos un tiempo de gracia para que el server JAX esté 100% listo
+        await asyncio.sleep(1.5)
         try:
-            # 2. Petición a la API local de FastAPI
             response = await window.fetch("http://localhost:8000/api/all-metrics")
-            data = await response.json()
+            js_data = await response.json()
+            data = js_data.to_py()
             
-            # 3. DEPURA EN LA CONSOLA: Presiona F12 en Brave para ver qué llega
-            print(f"DEBUG JENNIFER - Datos del Servidor: {data}")
-
-            # 4. Mapeamos cada modelo del JSON a su tarjeta en el HTML
-            # "model_key" debe coincidir con las llaves de tu metrics_package en Python
             for m in ["lin", "log", "mlp", "tree"]:
                 m_info = data.get(m)
-                
                 if m_info:
-                    # Actualizar Accuracy
-                    acc_el = document.querySelector(f"#acc-{m}")
-                    if acc_el:
-                        acc_el.innerText = f"{m_info.get('acc', 0):.2f}"
+                    acc_val = m_info.get('acc', 0)
                     
-                    # Actualizar Matriz de Confusión (TN y TP)
-                    tn_el = document.querySelector(f"#tn-{m}")
-                    tp_el = document.querySelector(f"#tp-{m}")
-                    if tn_el: tn_el.innerText = str(int(m_info.get('tn', 0)))
-                    if tp_el: tp_el.innerText = str(int(m_info.get('tp', 0)))
+                    # Actualizar Accuracy y Barra
+                    document.querySelector(f"#acc-{m}").innerText = f"{acc_val:.2f}"
+                    bar = document.querySelector(f"#bar-{m}")
+                    if bar: bar.style.width = f"{acc_val}%"
                     
-                    # Actualizar F1-Score (si el elemento existe en el card)
-                    f1_el = document.querySelector(f"#f1-{m}")
-                    if f1_el:
-                        f1_el.innerText = f"{m_info.get('f1', 0):.4f}"
-                else:
-                    print(f"Aviso: No se encontraron datos para el modelo {m}")
-                    
-        except Exception as e:
-            print(f"Error en la comunicación con el servidor: {e}")
+                    # Actualizar F1, Precision, Recall
+                    document.querySelector(f"#f1-{m}").innerText = f"{m_info.get('f1', 0):.4f}"
+                    document.querySelector(f"#pre-{m}").innerText = f"{m_info.get('pre', 0):.4f}"
+                    document.querySelector(f"#rec-{m}").innerText = f"{m_info.get('rec', 0):.4f}"
 
-    # Ejecutar la carga al iniciar la página
+                    # Actualizar Matriz
+                    document.querySelector(f"#tn-{m}").innerText = str(int(m_info.get('tn', 0)))
+                    document.querySelector(f"#fp-{m}").innerText = str(int(m_info.get('fp', 0)))
+                    document.querySelector(f"#fn-{m}").innerText = str(int(m_info.get('fn', 0)))
+                    document.querySelector(f"#tp-{m}").innerText = str(int(m_info.get('tp', 0)))
+        except Exception as e:
+            print(f"Error cargando métricas: {e}")
+
     asyncio.ensure_future(load_initial_metrics())
 
-    # --- LÓGICA DEL REPRODUCTOR ---
     def play_pause_music(event):
         audio = document.querySelector("#audio")
         icon = document.querySelector("#playPauseBtn i")
@@ -193,29 +214,20 @@
         bar = document.querySelector("#progressBar")
         audio.currentTime = (float(bar.value) / 100) * audio.duration
 
-    # Vinculación de audio
     audio_el = document.querySelector("#audio")
     audio_el.ontimeupdate = update_progress
     document.querySelector("#progressBar").oninput = seek_audio
 
-    # --- LÓGICA DE PREDICCIÓN (ORÁCULO) ---
     def predict_all(event):
         try:
-            # Aquí idealmente harías un POST a /predict en tu FastAPI
-            # Por ahora simulamos la respuesta visual
-            stars = document.querySelector("#input_stars").value
-            price = document.querySelector("#input_price").value
-            
             res_div = document.querySelector("#oracle_result")
             res_div.innerText = "Analizando libro en el modelo JAX..."
             res_div.style.color = "white"
-            
-            # Simulación de respuesta (conecta esto a tu fetch de pesos si es necesario)
+            # Aquí conectarías con tu lógica de inferencia del server
             res_div.innerText = "Predicción: ÉLITE ✨ (Probabilidad 87%)"
             res_div.style.color = "#4ade80"
-            
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Error predict: {e}")
     </script>
 </body>
 </html>

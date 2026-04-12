@@ -3,6 +3,9 @@ import jax
 import jax.numpy as jnp
 
 # source jax_env/bin/activate
+# mlflow ui
+#levantar el servidor
+# uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 class booksData:
     def __init__(self, file):
@@ -14,7 +17,8 @@ class booksData:
 
     def preprocess_data(self):
         """ 
-            Preprocess Environment_State and Opponent_Strategy data using One-Hot Encoding
+            Preprocess Data
+            Implementar algun ajuste con los autores famosos con los que van comenzando
         """
         genre_dummies = pd.get_dummies(self.data['category_name'], 
                                      prefix='genre', 
@@ -63,21 +67,26 @@ class booksData:
             'Romance': 'Romance',
             'LGBTQ+ eBooks': 'Romance',
         }
+
+        # famous Autor
+        columna_autor = 'author' 
+        conteo_autores = self.data[columna_autor].value_counts()
+        
+        # Filtramos los que tienen 3 o más libros publicados
+        autores_famosos = conteo_autores[conteo_autores >= 3].index
+        
+        # Creamos la nueva columna (1 si es famoso, 0 si no lo es)
+        self.data['is_established_author'] = self.data[columna_autor].isin(autores_famosos).astype(float)
+
         self.data['macro_genre'] = self.data['category_name'].map(mapeo).fillna('Others')
         genre_dummies = pd.get_dummies(self.data['macro_genre'], prefix='genre', dtype=int)
         
         self.data = pd.concat([self.data, genre_dummies], axis=1)
         self.data = self.data.drop(['category_name', 'macro_genre'], axis=1)
         
-        print(f"Preprocesamiento con nuevos grupos completado: {len(genre_dummies.columns)} columnas macro.")
-
-        print("Preprocessing complete: Variables convert successfully")
-
+        print(f"New columns for genre{len(genre_dummies.columns)} columnas macro.")
         print("Columns for genre:")
         print(genre_dummies.columns.tolist())
-
-
-        #print(f"Total columns after One-Hot: {len(self.data.columns)}")
 
     def extract_features_target(self):
         """ 
@@ -93,53 +102,37 @@ class booksData:
             'price'
             ]
         
-        col_boolean = ['isKindleUnlimited', 'isEditorsPick', 'isGoodReadsChoice']
+        col_boolean = ['is_established_author','isKindleUnlimited', 'isEditorsPick', 'isGoodReadsChoice']
         for col in col_boolean:
             self.data[col] = self.data[col].astype(int)
 
         self.features = col_numerical + col_dummies + col_boolean
 
-        # 1. Definimos el umbral de Élite (Percentil 75)
         umbral_elite = self.data['reviews'].quantile(0.75)
+        self.data['isElite'] = (self.data['reviews'] >= umbral_elite).astype(int)
         print(f"Umbral de reseñas para ser Élite: {umbral_elite}")
 
-        # 2. Creamos el nuevo Target
-        self.data['isElite'] = (self.data['reviews'] >= umbral_elite).astype(int)
-        target = 'isElite'      
 
         self.X = self.data[self.features].values
-        self.y = self.data[target].values
+        self.y = self.data['isElite'].values
         return self.X, self.y
 
     def normalized_data(self):
         """Normalización implemented with JAX"""
-        #59.61% de accuracy
-        X_numeric = self.X.astype(float) #astype convert True or False in 1.0 or 0.0
-        X_jax = jnp.array(X_numeric) # Convertir la matriz X a JAX array
-
-        # CAMBIO NO DEFINIDO: Guardamos en self para usarlos en la predicción futura
-        self.mu_train = jnp.mean(X_jax, axis=0) 
-        self.sigma_train = jnp.std(X_jax, axis=0)
-        
-        mean = jnp.mean(X_jax, axis=0) # Calcular mu por col, axis=0 calcula el promedio de cada característica
-        std = jnp.std(X_jax, axis=0) #Calcular la desviación estándar (sigma) por columna
-        
-        self.X_scaled = (X_jax - mean) / (std + 1e-8) ## 4. Aplicar la fórmula: (x - mu) / sigma
-        print("Normalización con JAX complete.")
-        
-        """
-        #47% de accuracy
         X_jax = jnp.array(self.X, dtype=jnp.float32)
-        X_numeric = X_jax[:, :3] # stars, reviews, price
-        X_binarias = X_jax[:, 3:] #genre and booleans
+        
+        # 2. Partimos la matriz. Las primeras 2 columnas son stars y price
+        X_num = X_jax[:, :2] 
+        X_bin = X_jax[:, 2:] # El resto se queda intacto (0s y 1s puros)
 
-        mu = jnp.mean(X_numeric, axis=0)    # Normalización SOLO para las numéricas
-        sigma = jnp.std(X_numeric, axis=0)
-        X_numeric_scaled = (X_numeric - mu) / (sigma + 1e-8) # El 1e-8 evita la división por cero si una columna es constante
+        # 3. Calculamos mu y sigma SOLO para stars y price
+        self.mu_train = jnp.mean(X_num, axis=0)
+        self.sigma_train = jnp.std(X_num, axis=0)
         
+        X_num_scaled = (X_num - self.mu_train) / (self.sigma_train + 1e-8)
         
-        self.X_scaled = jnp.concatenate([X_numeric_scaled, X_binarias], axis=1)
-        """
+        # 4. Volvemos a pegar la matriz
+        self.X_scaled = jnp.concatenate([X_num_scaled, X_bin], axis=1)
         print("Normalización con JAX complete.")
         return self.X_scaled
     

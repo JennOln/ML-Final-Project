@@ -290,3 +290,39 @@ h1, h2, h3,label, p {
     accent-color: var(--gold-bright); /* Color dorado al marcarse */
     cursor: pointer;
 }
+
+/* Estilo para la tabla de resultados */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    z-index: 10;
+}
+
+.model-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.matrix-viz {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.m-box {
+    padding: 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+}
+
+.tn { background: rgba(52, 152, 219, 0.2); }
+.tp { background: rgba(46, 204, 113, 0.2); }
+.fp, .fn { background: rgba(231, 76, 60, 0.2); }

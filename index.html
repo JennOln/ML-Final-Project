@@ -29,6 +29,8 @@
                     <li><a href="#logistic-section">Logistic</a></li>
                     <li><a href="#mlp-section">MLP</a></li>
                     <li><a href="#trees-section">Decision Trees</a></li>
+                    <li><a href="#mixture-section">Mixture Models</a></li>
+                    <li><a href="#adaboost-section">AdaBoost</a></li>
                 </ul>
             </nav>
         </header>
@@ -88,7 +90,7 @@
                     <div class="accuracy-wrapper">
                         <div id="bar-lin" class="accuracy-fill"></div>
                     </div>
-                    <div class="metrics-row"><p>F1: <b id="f1-lin">0</<p></b> | Precision: <b id="pre-lin">0</b> | Recall: <b id="rec-lin">0</b></div>
+                    <div class="metrics-row"><p>F1: <b id="f1-lin">0</<p></b> | Precision: <b id="pre-lin">0</b> | Recall: <b id="rec-lin">0</b></p></div>
                     <div class="matrix-viz">
                         <div class="m-box tn"><p>TN: <span id="tn-lin">0</p></span></div>
                         <div class="m-box fp"><p>FP: <span id="fp-lin">0</<p></span></div>
@@ -105,12 +107,12 @@
                     <div class="accuracy-wrapper">
                         <div id="bar-log" class="accuracy-fill"></div>
                     </div>
-                    <div class="metrics-row"><p>F1: <b id="f1-log">0</b> | Precision: <b id="pre-log">0</b> | Recall: <b id="rec-log">0</b></div>
+                    <div class="metrics-row"><p>F1: <b id="f1-log">0</b> | Precision: <b id="pre-log">0</b> | Recall: <b id="rec-log">0</b></p></div>
                     <div class="matrix-viz">
-                        <div class="m-box tn">TN: <span id="tn-log">0</span></div>
-                        <div class="m-box fp">FP: <span id="fp-log">0</span></div>
-                        <div class="m-box fn">FN: <span id="fn-log">0</span></div>
-                        <div class="m-box tp">TP: <span id="tp-log">0</span></div>
+                        <div class="m-box tn"><p>TN: <span id="tn-log">0</p></span></div>
+                        <div class="m-box fp"><p>FP: <span id="fp-log">0</span></p></div>
+                        <div class="m-box fn"><p>FN: <span id="fn-log">0</span></p></div>
+                        <div class="m-box tp"><p>TP: <span id="tp-log">0</span></p></div>
                     </div>
                 </section>
 
@@ -122,12 +124,12 @@
                     <div class="accuracy-wrapper">
                         <div id="bar-mlp" class="accuracy-fill"></div>
                     </div>
-                    <div class="metrics-row"><p>F1: <b id="f1-mlp">0</b> | Precision: <b id="pre-mlp">0</b> | Recall: <b id="rec-mlp">0</b></div>
+                    <div class="metrics-row"><p>F1: <b id="f1-mlp">0</b> | Precision: <b id="pre-mlp">0</b> | Recall: <b id="rec-mlp">0</b></p></div>
                     <div class="matrix-viz">
-                        <div class="m-box tn">TN: <span id="tn-mlp">0</span></div>
-                        <div class="m-box fp">FP: <span id="fp-mlp">0</span></div>
-                        <div class="m-box fn">FN: <span id="fn-mlp">0</span></div>
-                        <div class="m-box tp">TP: <span id="tp-mlp">0</span></div>
+                        <div class="m-box tn"><p>TN: <span id="tn-mlp">0</span></p></div>
+                        <div class="m-box fp"><p>FP: <span id="fp-mlp">0</span></p></div>
+                        <div class="m-box fn"><p>FN: <span id="fn-mlp">0</span></p></div>
+                        <div class="m-box tp"><p>TP: <span id="tp-mlp">0</span></p></div>
                     </div>
                 </section>
 
@@ -139,12 +141,46 @@
                     <div class="accuracy-wrapper">
                         <div id="bar-tree" class="accuracy-fill"></div>
                     </div>
-                    <div class="metrics-row"><p>F1: <b id="f1-tree">0</b> | Precision: <b id="pre-tree">0</b> | Recall: <b id="rec-tree">0</b></div>
+                    <div class="metrics-row"><p>F1: <b id="f1-tree">0</b> | Precision: <b id="pre-tree">0</b> | Recall: <b id="rec-tree">0</b></p></div>
                     <div class="matrix-viz">
-                        <div class="m-box tn">TN: <span id="tn-tree">0</span></div>
-                        <div class="m-box fp">FP: <span id="fp-tree">0</span></div>
-                        <div class="m-box fn">FN: <span id="fn-tree">0</span></div>
-                        <div class="m-box tp">TP: <span id="tp-tree">0</span></div>
+                        <div class="m-box tn"><p>TN: <span id="tn-tree">0</span></p></div>
+                        <div class="m-box fp"><p>FP: <span id="fp-tree">0</span></p></div>
+                        <div class="m-box fn"><p>FN: <span id="fn-tree">0</span></p></div>
+                        <div class="m-box tp"><p>TP: <span id="tp-tree">0</span></p></div>
+                    </div>
+                </section>
+
+                <section id="gmm-section" class="model-card">
+                    <div class="model-header">
+                        <h3>Mixture Models</h3>
+                        <div class="main-stat"><h2><span id="acc-gmm">0</span>% Accuracy</h2></div>
+                    </div>
+                    <div class="accuracy-wrapper">
+                        <div id="bar-gmm" class="accuracy-fill"></div>
+                    </div>
+                    <div class="metrics-row"><p>F1: <b id="f1-gmm">0</b> | Precision: <b id="pre-gmm">0</b> | Recall: <b id="rec-gmm">0</b></p></div>
+                    <div class="matrix-viz">
+                        <div class="m-box tn"><p>TN: <span id="tn-gmm">0</span></p></div>
+                        <div class="m-box fp"><p>FP: <span id="fp-gmm">0</span></p></div>
+                        <div class="m-box fn"><p>FN: <span id="fn-gmm">0</span></p></div>
+                        <div class="m-box tp"><p>TP: <span id="tp-gmm">0</span></p></div>
+                    </div>
+                </section>
+
+                <section id="adaboost-section" class="model-card">
+                    <div class="model-header">
+                        <h3>AdaBoost</h3>
+                        <div class="main-stat"><h2><span id="acc-ada">0</span>% Accuracy</h2></div>
+                    </div>
+                    <div class="accuracy-wrapper">
+                        <div id="bar-ada" class="accuracy-fill"></div>
+                    </div>
+                    <div class="metrics-row"><p>F1: <b id="f1-ada">0</b> | Precision: <b id="pre-ada">0</b> | Recall: <b id="rec-ada">0</b></p></div>
+                    <div class="matrix-viz">
+                        <div class="m-box tn"><p>TN: <span id="tn-ada">0</span></p></div>
+                        <div class="m-box fp"><p>FP: <span id="fp-ada">0</span></p></div>
+                        <div class="m-box fn"><p>FN: <span id="fn-ada">0</span></p></div>
+                        <div class="m-box tp"><p>TP: <span id="tp-ada">0</span></p></div>
                     </div>
                 </section>
             </div>
@@ -168,7 +204,7 @@
             js_data = await response.json()
             data = js_data.to_py()
             
-            for m in ["lin", "log", "mlp", "tree"]:
+            for m in ["lin", "log", "mlp", "tree", "gmm", "ada"]:
                 m_info = data.get(m)
                 if m_info:
                     acc_val = m_info.get('acc', 0)

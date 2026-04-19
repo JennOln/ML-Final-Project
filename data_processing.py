@@ -2,8 +2,6 @@ import pandas as pd
 import jax
 import jax.numpy as jnp
 
-# source jax_env/bin/activate
-# mlflow ui
 #levantar el servidor
 # uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
@@ -111,7 +109,6 @@ class booksData:
         umbral_elite = self.data['reviews'].quantile(0.75)
         self.data['isElite'] = (self.data['reviews'] >= umbral_elite).astype(int)
         print(f"Umbral de reseñas para ser Élite: {umbral_elite}")
-
 
         self.X = self.data[self.features].values
         self.y = self.data['isElite'].values

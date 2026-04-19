@@ -111,8 +111,22 @@ class BooksEliteFlow(FlowSpec):
         # Hacemos la predicción directamente
         y_pred_tree = self.tree_model.predict(self.X_scaled)
         self.m_tree = calcular_metricas(self.y, y_pred_tree)
+        # Gaussian Mixture Model (GMM)
+        print("Entrenando Mixture Models (GMM)...")
+        # El K=2 significa que usaremos 2 gaussianas para los Normales y 2 para los Élite
+        self.params_gmm = models.GMMClassifier.fit(self.X_scaled, self.y, K=2, iters=50)
+
+        """
+            AdaBoost
+        """
+        #AdaBoost
+        print("\nTraining AdaBoost (Ensemble of 50 experts)...")
+        self.adaboost_model = models.AdaBoostClassifier(n_clf=50)
+        self.adaboost_model.fit(self.X_scaled, self.y)
 
         self.next(self.evaluate_and_log)
+
+        
 
     @step
     def evaluate_and_log(self):
@@ -143,6 +157,17 @@ class BooksEliteFlow(FlowSpec):
                 self.mejor_f1_mlp = m_test_mlp['f1']
                 self.mejor_umbral_mlp = float(umbral_test)
 
+        # GMM 
+        probs_gmm = models.GMMClassifier.predict_proba(self.params_gmm, self.X_scaled)
+        self.mejor_f1_gmm = 0.0
+        self.mejor_umbral_gmm = 0.25
+        for umbral_test in jnp.arange(0.20, 0.52, 0.02):
+            y_pred_test_gmm = jnp.where(probs_gmm > umbral_test, 1, 0)
+            m_test_gmm = calcular_metricas(self.y, y_pred_test_gmm)
+            if m_test_gmm['f1'] > self.mejor_f1_gmm:
+                self.mejor_f1_gmm = m_test_gmm['f1']
+                self.mejor_umbral_gmm = float(umbral_test)
+    
         # Calculamos las métricas finales con los ganadores
         y_pred_log_final = jnp.where(probs_log > self.mejor_umbral_log, 1, 0)
         self.m_log = calcular_metricas(self.y, y_pred_log_final)
@@ -150,14 +175,33 @@ class BooksEliteFlow(FlowSpec):
         y_pred_mlp_final = jnp.where(probs_mlp > self.mejor_umbral_mlp, 1, 0)
         self.m_mlp = calcular_metricas(self.y, y_pred_mlp_final)
 
+        y_pred_gmm_final = jnp.where(probs_gmm > self.mejor_umbral_gmm, 1, 0)
+        self.m_gmm = calcular_metricas(self.y, y_pred_gmm_final)
+
+        # AdaBoost
+        probs_ada = self.adaboost_model.predict_proba(self.X_scaled)
+        self.mejor_f1_ada = 0.0
+        self.mejor_umbral_ada = 0.50 
+        for umbral_test in jnp.arange(0.30, 0.70, 0.02):
+            y_pred_test_ada = jnp.where(probs_ada > umbral_test, 1, 0)
+            m_test_ada = calcular_metricas(self.y, y_pred_test_ada)
+            if m_test_ada['f1'] > self.mejor_f1_ada:
+                self.mejor_f1_ada = m_test_ada['f1']
+                self.mejor_umbral_ada = float(umbral_test)
+
+        y_pred_ada_final = jnp.where(probs_ada > self.mejor_umbral_ada, 1, 0)
+        self.m_ada = calcular_metricas(self.y, y_pred_ada_final)
+
+        
+
         # Imprimir Resultados Exactamente como los tenías
         print("\n--- FINAL RESULTS ---")
-        print(f"{'METRICS':<15} | {'LINEAL':<15} | {'LOGISTIC':<15} | {'MLP (RED NEUR.)':<18} | {'DECISION TREE':<15}")
-        print("-" * 100)
-        print(f"{'Accuracy (%)':<15} | {self.m_lin['acc']:>14.2f}% | {self.m_log['acc']:>14.2f}% | {self.m_mlp['acc']:>17.2f}% | {self.m_tree['acc']:>14.2f}%")
-        print(f"{'Precision':<15} | {self.m_lin['pre']:>15.4f} | {self.m_log['pre']:>15.4f} | {self.m_mlp['pre']:>18.4f} | {self.m_tree['pre']:>15.4f}")
-        print(f"{'Recall':<15} | {self.m_lin['rec']:>15.4f} | {self.m_log['rec']:>15.4f} | {self.m_mlp['rec']:>18.4f} | {self.m_tree['rec']:>15.4f}")
-        print(f"{'F1-Score':<15} | {self.m_lin['f1']:>15.4f} | {self.m_log['f1']:>15.4f} | {self.m_mlp['f1']:>18.4f} | {self.m_tree['f1']:>15.4f}")
+        print(f"{'METRICS':<15} | {'LINEAL':<12} | {'LOGISTIC':<12} | {'MLP':<12} | {'TREE':<12} | {'GMM':<12}")
+        print("-" * 85)
+        print(f"{'Accuracy (%)':<15} | {self.m_lin['acc']:>11.2f}% | {self.m_log['acc']:>11.2f}% | {self.m_mlp['acc']:>11.2f}% | {self.m_tree['acc']:>11.2f}% | {self.m_gmm['acc']:>11.2f}%")
+        print(f"{'Precision':<15} | {self.m_lin['pre']:>12.4f} | {self.m_log['pre']:>12.4f} | {self.m_mlp['pre']:>12.4f} | {self.m_tree['pre']:>12.4f} | {self.m_gmm['pre']:>12.4f}")
+        print(f"{'Recall':<15} | {self.m_lin['rec']:>12.4f} | {self.m_log['rec']:>12.4f} | {self.m_mlp['rec']:>12.4f} | {self.m_tree['rec']:>12.4f} | {self.m_gmm['rec']:>12.4f}")
+        print(f"{'F1-Score':<15} | {self.m_lin['f1']:>12.4f} | {self.m_log['f1']:>12.4f} | {self.m_mlp['f1']:>12.4f} | {self.m_tree['f1']:>12.4f} | {self.m_gmm['f1']:>12.4f}")
 
         print("\nConfusion Matrix:")
         print(f"\nLINEAL CLASSIFIER")
@@ -176,12 +220,18 @@ class BooksEliteFlow(FlowSpec):
         print(f"  (TN): {int(self.m_tree['tn']):<8} |  (TP): {int(self.m_tree['tp']):<8}")
         print(f"  (FP): {int(self.m_tree['fp']):<8} |  (FN): {int(self.m_tree['fn']):<8}\n")
 
+        print(f"\nGMM CLASSIFIER (Umbral: {self.mejor_umbral_gmm:.2f})")
+        print(f"  (TN): {int(self.m_gmm['tn']):<8} |  (TP): {int(self.m_gmm['tp']):<8}")
+        print(f"  (FP): {int(self.m_gmm['fp']):<8} |  (FN): {int(self.m_gmm['fn']):<8}\n")
+
         # Preparar y guardar JSON para la API (Uvicorn)
         metrics_package = {
             "lin": self.m_lin,
             "log": self.m_log,
             "mlp": self.m_mlp,
-            "tree": self.m_tree
+            "tree": self.m_tree,
+            "gmm": self.m_gmm,
+            "ada": self.m_ada
         }
         with open("metrics_cache.json", "w") as f:
             json.dump(metrics_package, f)
@@ -195,6 +245,7 @@ class BooksEliteFlow(FlowSpec):
             mlflow.log_param("n_features", self.n_features)
             mlflow.log_param("best_threshold_logistic", self.mejor_umbral_log)
             mlflow.log_param("best_threshold_mlp", self.mejor_umbral_mlp)
+            mlflow.log_param("best_threshold_gmm", self.mejor_umbral_gmm)
 
             jnp.savez("final_weights.npz", *self.params_mlp)
             mlflow.log_artifact("final_weights.npz")
@@ -218,7 +269,17 @@ class BooksEliteFlow(FlowSpec):
                 "tree_accuracy": float(self.m_tree['acc']), "tree_precision": float(self.m_tree['pre']),
                 "tree_recall": float(self.m_tree['rec']), "tree_f1": float(self.m_tree['f1']),
                 "tree_TP": float(self.m_tree['tp']), "tree_TN": float(self.m_tree['tn']),
-                "tree_FP": float(self.m_tree['fp']), "tree_FN": float(self.m_tree['fn'])
+                "tree_FP": float(self.m_tree['fp']), "tree_FN": float(self.m_tree['fn']),
+
+                "gmm_accuracy": float(self.m_gmm['acc']), "gmm_precision": float(self.m_gmm['pre']),
+                "gmm_recall": float(self.m_gmm['rec']), "gmm_f1": float(self.m_gmm['f1']),
+                "gmm_TP": float(self.m_gmm['tp']), "gmm_TN": float(self.m_gmm['tn']),
+                "gmm_FP": float(self.m_gmm['fp']), "gmm_FN": float(self.m_gmm['fn']),
+
+                "ada_accuracy": float(self.m_ada['acc']), "ada_precision": float(self.m_ada['pre']),
+                "ada_recall": float(self.m_ada['rec']), "ada_f1": float(self.m_ada['f1']),
+                "ada_TP": float(self.m_ada['tp']), "ada_TN": float(self.m_ada['tn']),
+                "ada_FP": float(self.m_ada['fp']), "ada_FN": float(self.m_ada['fn'])
             })
 
         self.next(self.end)

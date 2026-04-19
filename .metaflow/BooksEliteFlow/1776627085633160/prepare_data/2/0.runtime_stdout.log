@@ -1,0 +1,8 @@
+[MFLOG|0|2026-04-19T19:31:29.024082Z|runtime|5bc8245e-53b4-4aac-8f08-2929363e86bd]New columns for genre11 columnas macro.
+[MFLOG|0|2026-04-19T19:31:29.024594Z|runtime|b256d0d7-eea3-4e8d-9e11-18f154bd4074]Columns for genre:
+[MFLOG|0|2026-04-19T19:31:29.024738Z|runtime|6c83e932-0628-4e6e-a449-ff09e70071ac]['genre_Culture', 'genre_Education', 'genre_Entertainment', 'genre_Health', 'genre_Nonfiction', 'genre_Others', 'genre_Romance', 'genre_Science Fiction & Fantasy', 'genre_Teen & Young Adult', 'genre_Thriller', 'genre_childs']
+[MFLOG|0|2026-04-19T19:31:29.024798Z|runtime|f60c991f-0032-41f6-8ad6-2eb25325e6b5]Columnas de género (One-Hot): ['genre_Culture', 'genre_Education', 'genre_Entertainment', 'genre_Health', 'genre_Nonfiction', 'genre_Others', 'genre_Romance', 'genre_Science Fiction & Fantasy', 'genre_Teen & Young Adult', 'genre_Thriller', 'genre_childs']
+[MFLOG|0|2026-04-19T19:31:29.029577Z|runtime|a2809cd9-1eb1-4d9b-a9d4-54119f589c86]Umbral de reseñas para ser Élite: 365.0
+[MFLOG|0|2026-04-19T19:31:29.480241Z|runtime|060ce0ce-ca4f-49c2-a11a-39efdb721031]Normalización con JAX complete.
+[MFLOG|0|2026-04-19T19:31:29.487314Z|runtime|e56efc53-7cf8-4e21-b5e5-011f2ae46df2]
+[MFLOG|0|2026-04-19T19:31:29.839814Z|runtime|0eba35a0-20c2-4ea2-ab12-6dd66228e61a]Training with 17 features

@@ -249,3 +249,202 @@ class DecisionTree:
             return self._make_prediction(x, tree.left)
         else:
             return self._make_prediction(x, tree.right)
+        
+
+"""Gaussian Mixture Model (GMM) Classifier"""
+class GMMClassifier:
+    
+    @staticmethod
+    def _log_gaussian_pdf(X, mu, var):
+        """
+        Calcula la probabilidad logarítmica de que X pertenezca a una Gaussiana (mu, var).
+        Usamos varianza diagonal para estabilidad numérica extrema en JAX.
+        """
+        D = X.shape[1]
+        log_det = jnp.sum(jnp.log(var))
+        log_norm_const = -0.5 * D * jnp.log(2 * jnp.pi) - 0.5 * log_det
+        mahalanobis = -0.5 * jnp.sum(((X - mu)**2) / var, axis=1)
+        return log_norm_const + mahalanobis
+
+    @staticmethod
+    def _e_step(X, weights, mus, vars):
+        """ Expectation: Calcula la 'responsabilidad' de cada Gaussiana sobre cada punto """
+        K = weights.shape[0]
+        
+        # Calculamos el log(PDF) + log(peso) para cada grupo (K)
+        log_pdfs = jnp.stack([
+            GMMClassifier._log_gaussian_pdf(X, mus[k], vars[k]) + jnp.log(weights[k])
+            for k in range(K)
+        ], axis=1)
+
+        # Usamos logsumexp para evitar overflow/underflow (Matemáticas seguras)
+        log_marginal = jax.scipy.special.logsumexp(log_pdfs, axis=1, keepdims=True)
+        
+        # Responsabilidades (gamma)
+        resp = jnp.exp(log_pdfs - log_marginal)
+        return resp
+
+    @staticmethod
+    def _m_step(X, resp):
+        """ Maximization: Actualiza pesos, medias y varianzas """
+        # Agregamos 1e-10 para evitar divisiones por cero
+        N_k = jnp.sum(resp, axis=0) + 1e-10 
+        
+        # 1. Actualizar Pesos
+        new_weights = N_k / X.shape[0]
+
+        # 2. Actualizar Medias
+        new_mus = jnp.dot(resp.T, X) / N_k[:, None]
+
+        # 3. Actualizar Varianzas (Diagonales)
+        diff_sq = (X[:, None, :] - new_mus[None, :, :]) ** 2
+        new_vars = jnp.sum(resp[:, :, None] * diff_sq, axis=0) / N_k[:, None]
+        
+        # Suavizado estadístico (evita que la varianza sea 0 exacto)
+        new_vars = new_vars + 1e-6 
+
+        return new_weights, new_mus, new_vars
+
+    @staticmethod
+    def _train_single_gmm(X, K, key, iters=50):
+        """ Entrena una sola mezcla Gaussiana usando el Algoritmo EM """
+        N, D = X.shape
+        
+        # Inicialización aleatoria usando puntos reales de los datos
+        idx = jax.random.randint(key, (K,), 0, N)
+        mus = X[idx]
+        vars = jnp.ones((K, D))
+        weights = jnp.ones(K) / K
+
+        for _ in range(iters):
+            resp = GMMClassifier._e_step(X, weights, mus, vars)
+            weights, mus, vars = GMMClassifier._m_step(X, resp)
+
+        return weights, mus, vars
+
+    @staticmethod
+    def fit(X, y, K=2, iters=50):
+        """
+        Clasificador Generativo Completo:
+        Ajusta un GMM para la clase Normal (y=0) y otro para Élite (y=1).
+        """
+        # Convertir a numpy normal temporalmente para el filtrado seguro de máscaras
+        X_np, y_np = np.array(X), np.array(y)
+        
+        X_0 = jnp.array(X_np[y_np == 0])
+        X_1 = jnp.array(X_np[y_np == 1])
+
+        # Probabilidades Base (Priors)
+        prior_0 = len(X_0) / len(X)
+        prior_1 = len(X_1) / len(X)
+
+        key = jax.random.PRNGKey(42)
+        key0, key1 = jax.random.split(key)
+
+        # Entrenar K campanas de Gauss para cada clase (K=2 por defecto)
+        w0, m0, v0 = GMMClassifier._train_single_gmm(X_0, K, key0, iters)
+        w1, m1, v1 = GMMClassifier._train_single_gmm(X_1, K, key1, iters)
+
+        # Empaquetamos todo en "params" como el resto de tus modelos
+        return (w0, m0, v0, w1, m1, v1, prior_0, prior_1)
+
+    @staticmethod
+    def predict_proba(params, X):
+        """ Inferencia usando el Teorema de Bayes """
+        w0, m0, v0, w1, m1, v1, prior_0, prior_1 = params
+
+        # Log-Probabilidad de haber sido generado por la Clase 0 (Normal)
+        log_pdfs_0 = jnp.stack([
+            GMMClassifier._log_gaussian_pdf(X, m0[k], v0[k]) + jnp.log(w0[k])
+            for k in range(w0.shape[0])
+        ], axis=1)
+        log_prob_0 = jax.scipy.special.logsumexp(log_pdfs_0, axis=1) + jnp.log(prior_0)
+
+        # Log-Probabilidad de haber sido generado por la Clase 1 (Élite)
+        log_pdfs_1 = jnp.stack([
+            GMMClassifier._log_gaussian_pdf(X, m1[k], v1[k]) + jnp.log(w1[k])
+            for k in range(w1.shape[0])
+        ], axis=1)
+        log_prob_1 = jax.scipy.special.logsumexp(log_pdfs_1, axis=1) + jnp.log(prior_1)
+
+        # P(y=1 | X) usando probabilidad de Bayes (con truco logsumexp para evitar NaN)
+        log_total = jax.scipy.special.logsumexp(jnp.stack([log_prob_0, log_prob_1], axis=1), axis=1)
+        return jnp.exp(log_prob_1 - log_total)
+    
+
+"""AdaBoost Classifier (con Decision Stumps)"""
+class DecisionStump:
+    def __init__(self):
+        self.polarity = 1
+        self.feature_idx = None
+        self.threshold = None
+        self.alpha = None 
+
+    def predict(self, X):
+        n_samples = X.shape[0]
+        X_column = X[:, self.feature_idx]
+        predictions = np.ones(n_samples)
+        
+        if self.polarity == 1:
+            predictions[X_column < self.threshold] = -1
+        else:
+            predictions[X_column > self.threshold] = -1
+        return predictions
+
+class AdaBoostClassifier:
+    def __init__(self, n_clf=50):
+        self.n_clf = n_clf
+        self.clfs = []
+
+    def fit(self, X, y):
+        X = np.array(X)
+        y = np.array(y)
+        # Convertimos [0, 1] a [-1, 1] para la matemática de AdaBoost
+        y_ = np.where(y == 0, -1, 1) 
+        n_samples, n_features = X.shape
+        
+        # Inicializar pesos
+        w = np.full(n_samples, (1 / n_samples))
+        self.clfs = []
+
+        for _ in range(self.n_clf):
+            clf = DecisionStump()
+            min_error = float('inf')
+
+            for feature_i in range(n_features):
+                feature_values = np.expand_dims(X[:, feature_i], axis=1)
+                unique_values = np.unique(feature_values)
+
+                for threshold in unique_values:
+                    p = 1
+                    predictions = np.ones(np.shape(y_))
+                    predictions[X[:, feature_i] < threshold] = -1
+
+                    # Error ponderado
+                    error = sum(w[y_ != predictions])
+
+                    if error > 0.5:
+                        error = 1 - error
+                        p = -1
+
+                    if error < min_error:
+                        clf.polarity = p
+                        clf.threshold = threshold
+                        clf.feature_idx = feature_i
+                        min_error = error
+
+            EPS = 1e-10
+            clf.alpha = 0.5 * np.log((1.0 - min_error + EPS) / (min_error + EPS))
+
+            predictions = clf.predict(X)
+            w *= np.exp(-clf.alpha * y_ * predictions)
+            w /= np.sum(w) 
+
+            self.clfs.append(clf)
+
+    def predict_proba(self, X):
+        X = np.array(X)
+        clf_preds = [clf.alpha * clf.predict(X) for clf in self.clfs]
+        y_pred_continuous = np.sum(clf_preds, axis=0)
+        # Regresión Logística Aditiva (pasarlo a probabilidad 0-1)
+        return 1 / (1 + jnp.exp(-y_pred_continuous))

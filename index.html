@@ -56,21 +56,25 @@
 
         <div class="content-wrapper">
             <section id="input-section" class="form-container">
-                <h3>Predict Book Popularity (Oracle)</h3>
+                <h3>Predict Book Popularity</h3>
                 <div class="input-group">
                     <input type="number" id="input_stars" placeholder="Stars (1-5)" step="0.1">
                     <input type="number" id="input_price" placeholder="Price ($)">
                     <select id="input_genre">
                         <option value="genre_Science Fiction & Fantasy">Science Fiction & Fantasy</option>
-                        <option value="genre_Romance">Romance</option>
                         <option value="genre_Education">Education</option>
                         <option value="genre_Health">Health</option>
                         <option value="genre_Culture">Culture</option>
                         <option value="genre_Nonfiction">Nonfiction</option>
-                        <option value="genre_Thriller">Thriller</option>
+                        <option value="genre_childs">Children's eBooks</option>
                         <option value="genre_Teen & Young Adult">Teen & Young Adult</option>
+                        <option value="genre_Entertainment">Entertainment & Comics</option>
+                        <option value="genre_Thriller">Mystery & Thriller</option>
+                        <option value="genre_Romance">Romance</option>
+                        <option value="genre_Others">Others</option>
                     </select>
                     <div class="checkbox-wrapper">
+                        <label><input type="checkbox" id="check_author"> Famous (>3 Libros)</label>
                         <label><input type="checkbox" id="check_ku"> Kindle Unlimited</label>
                         <label><input type="checkbox" id="check_pick"> Editor's Pick</label>
                         <label><input type="checkbox" id="check_choice"> Goodreads Choice</label>
@@ -254,16 +258,55 @@
     audio_el.ontimeupdate = update_progress
     document.querySelector("#progressBar").oninput = seek_audio
 
-    def predict_all(event):
+    import json
+    from pyodide.http import pyfetch
+
+    async def predict_all(event):
+        res_div = document.querySelector("#oracle_result")
         try:
-            res_div = document.querySelector("#oracle_result")
-            res_div.innerText = "Analizando libro en el modelo JAX..."
+            res_div.innerText = "Consultando a la Red Neuronal JAX..."
             res_div.style.color = "white"
-            # Aquí conectarías con tu lógica de inferencia del server
-            res_div.innerText = "Predicción: ÉLITE ✨ (Probabilidad 87%)"
-            res_div.style.color = "#4ade80"
+
+            # 1. Recolectar y CONVERTIR datos forzosamente a los tipos correctos
+            input_data = {
+                "stars": float(document.querySelector("#input_stars").value),
+                "price": float(document.querySelector("#input_price").value),
+                "genre": str(document.querySelector("#input_genre").value),
+                "is_established_author": bool(document.querySelector("#check_author").checked),
+                "ku": bool(document.querySelector("#check_ku").checked),
+                "pick": bool(document.querySelector("#check_pick").checked),
+                "choice": bool(document.querySelector("#check_choice").checked)
+            }
+
+            # 2. Enviar a Uvicorn usando pyfetch (mucho más seguro que window.fetch)
+            response = await pyfetch(
+                "http://localhost:8000/api/predict",
+                method="POST",
+                headers={"Content-Type": "application/json"},
+                body=json.dumps(input_data)
+            )
+            
+            # 3. Atrapar errores del servidor si enviamos algo mal (ej. campos vacíos)
+            if not response.ok:
+                error_texto = await response.string()
+                print(f"Rebote del servidor: {error_texto}")
+                res_div.innerText = "Error del servidor: Revisa la consola (F12) para detalles."
+                res_div.style.color = "#fb7185"
+                return
+
+            # 4. Procesar el éxito
+            data = await response.json()
+            prob_pct = data['probabilidad'] * 100
+            res_div.innerText = f"Predicción: {data['mensaje']} (Probabilidad de ser Élite: {prob_pct:.1f}%)"
+            res_div.style.color = "#4ade80" if data['es_elite'] else "#fb7185"
+            
+        except ValueError:
+            res_div.innerText = "Error: Por favor ingresa números válidos en Estrellas y Precio."
+            res_div.style.color = "#fb7185"
         except Exception as e:
-            print(f"Error predict: {e}")
+            print(f"Falla crítica en el frontend: {str(e)}")
+            res_div.innerText = f"Error interno: {str(e)}"
+            res_div.style.color = "#fb7185"
     </script>
 </body>
 </html>

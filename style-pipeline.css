@@ -227,17 +227,46 @@ html {
 
 .input-group {
     display: flex;
+    flex-direction: column; /* Apila los elementos de arriba hacia abajo */
     gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    max-width: 500px; /* Evita que los botones se hagan gigantes en PC */
+    margin: 0 auto; /* Lo centra perfectamente */
 }
 
-input, select, button#predict_btn {
-    padding: 12px;
+input[type="number"], select {
+    width: 100%; /* Fuerza a que ocupen todo el espacio disponible sin cortarse */
+    padding: 15px;
     background: #1a1a1a;
     border: 1px solid var(--gold-elden);
     color: white;
     font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    border-radius: 8px; /* Un toque de bordes redondeados */
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Estilo oscuro para las opciones desplegadas del género */
+select option {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 10px;
+}
+
+/* Botón de Analizar */
+button#predict_btn {
+    width: 100%;
+    padding: 15px;
+    cursor: pointer;
+    background: var(--gold-elden);
+    color: black;
+    font-weight: bold;
+    font-family: 'Cormorant Garamond', serif;
+    transition: 0.3s;
+    border: none;
+    border-radius: 8px;
 }
 
 button#predict_btn {

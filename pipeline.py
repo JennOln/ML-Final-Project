@@ -54,8 +54,21 @@ class BooksEliteFlow(FlowSpec):
         self.learning_rate = 0.1  
         self.epochs = 1000
 
+        # Guardar parámetros de normalización para el Oráculo
+        scaler_dict = {
+            "mu_stars": float(data.mu_train[0]),
+            "mu_price": float(data.mu_train[1]),
+            "sigma_stars": float(data.sigma_train[0]),
+            "sigma_price": float(data.sigma_train[1])
+        }
+        import json
+        with open("scaler_params.json", "w") as f:
+            json.dump(scaler_dict, f)
+
         print(f"\nTraining with {self.n_features} features")
         self.next(self.train_models)
+
+        
 
     @step
     def train_models(self):
